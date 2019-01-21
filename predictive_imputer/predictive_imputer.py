@@ -48,8 +48,12 @@ class PredictiveImputer(BaseEstimator, TransformerMixin):
                     X_unk = X_s[y_nan]
 
                     estimator_ = self.estimators_[i]
-                    estimator_.fit(X_train, y_train)
+                    # estimator_.fit(X_train, y_train)  --> this is the original code
+                    # but it is no need for using `fit` method when there are no `nan` value
+                    # in that specific column.
                     if len(X_unk) > 0:
+                        # this is the fixed code, in order to speed the calculating.  2019/1/21 21:44 
+                        estimator_.fit(X_train, y_train)
                         new_imputed[y_nan, i] = estimator_.predict(X_unk)
 
             else:
